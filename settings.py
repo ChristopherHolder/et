@@ -28,3 +28,9 @@ CHEEK_COLOR = (240, 150, 140)    # rosy cheeks
 
 # Walk animation
 WALK_CYCLE_SPEED = 5.0           # cycles per second
+
+# Trees
+TREE_COUNT = 80
+TREE_SEED = 42
+TREE_MIN_RADIUS = 28
+TREE_MAX_RADIUS = 48

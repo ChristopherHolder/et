@@ -4,6 +4,7 @@ from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TITLE, MAP_WIDTH, MAP_HEI
 from camera import Camera
 from player import Player
 from world import World
+from trees import Trees
 
 
 class Game:
@@ -15,6 +16,7 @@ class Game:
         self.running = True
 
         self.world = World()
+        self.trees = Trees()
         self.camera = Camera()
         self.player = Player(MAP_WIDTH // 2, MAP_HEIGHT // 2)
 
@@ -40,7 +42,11 @@ class Game:
 
     def draw(self):
         self.world.draw(self.screen, self.camera)
+        # depth-sorted: trees behind player, then player, then trees in front
+        player_y = self.player.rect.bottom
+        split = self.trees.draw_behind(self.screen, self.camera, player_y)
         self.player.draw(self.screen, self.camera)
+        self.trees.draw_front(self.screen, self.camera, split)
         pygame.display.flip()
 
 
