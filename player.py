@@ -101,9 +101,10 @@ class Player:
             pygame.draw.circle(surface, OVERALL_BUCKLE,
                                (int(buckle_x), int(buckle_y)), int(r * 0.08))
 
-        # --- arms (animated, swing opposite to legs) ---
-        for side, arm_swing in ((-1, -swing), (1, swing)):
-            arm_fwd = arm_swing * r * 0.35
+        # --- arms (animated, swing opposite to legs, gentler than legs) ---
+        arm_swing = swing * 0.5
+        for side, a_swing in ((-1, -arm_swing), (1, arm_swing)):
+            arm_fwd = a_swing * r * 0.35
             ax = bx + perp_x * side * r * 0.55 + fwd_x * arm_fwd
             ay = by + perp_y * side * r * 0.55 + fwd_y * arm_fwd
             # shirt sleeve
@@ -146,28 +147,59 @@ class Player:
             pygame.draw.circle(surface, (255, 255, 255),
                                (int(sx), int(sy)), int(head_r * 0.08))
 
-        # --- straw hat ---
-        hat_x = hx + fwd_x * head_r * 0.1
-        hat_y = hy + fwd_y * head_r * 0.1
+        # --- straw hat (big and distinctive) ---
+        hat_x = hx + fwd_x * head_r * 0.05
+        hat_y = hy + fwd_y * head_r * 0.05
+        deg = -math.degrees(angle) + 90
+        outline_col = (90, 70, 30)
+        straw_light = (245, 225, 160)
+        straw_dark = (210, 185, 115)
+        ol = 3  # outline width
 
-        # wide brim (ellipse facing the camera)
-        brim_w = int(head_r * 2.0)
-        brim_h = int(head_r * 1.6)
-        brim_surf = pygame.Surface((brim_w * 2, brim_h * 2), pygame.SRCALPHA)
-        pygame.draw.ellipse(brim_surf, HAT_STRAW, (0, 0, brim_w * 2, brim_h * 2))
-        # rotate brim to match facing
-        brim_surf = pygame.transform.rotate(brim_surf, -math.degrees(angle) + 90)
-        brim_rect = brim_surf.get_rect(center=(int(hat_x), int(hat_y)))
-        surface.blit(brim_surf, brim_rect)
+        # --- wide brim ---
+        brim_w = int(head_r * 2.6)
+        brim_h = int(head_r * 2.2)
+        bsz = ((brim_w + ol) * 2, (brim_h + ol) * 2)
+        brim_surf = pygame.Surface(bsz, pygame.SRCALPHA)
+        # dark outline ellipse
+        pygame.draw.ellipse(brim_surf, outline_col, (0, 0, bsz[0], bsz[1]))
+        # main straw fill
+        inner = (ol, ol, brim_w * 2, brim_h * 2)
+        pygame.draw.ellipse(brim_surf, HAT_STRAW, inner)
+        # straw weave: alternating light/dark concentric rings
+        cx_b, cy_b = bsz[0] // 2, bsz[1] // 2
+        for ring in range(3, max(brim_w, brim_h), 5):
+            col = straw_dark if (ring // 5) % 2 == 0 else straw_light
+            rect = (cx_b - ring, cy_b - ring, ring * 2, int(ring * 2 * brim_h / brim_w))
+            pygame.draw.ellipse(brim_surf, col, rect, 1)
+        # clip weave to inner ellipse by redrawing outline on top
+        pygame.draw.ellipse(brim_surf, outline_col, (0, 0, bsz[0], bsz[1]), ol)
 
-        # hat crown (top part)
-        crown_w = int(head_r * 1.1)
-        crown_h = int(head_r * 0.9)
-        crown_surf = pygame.Surface((crown_w * 2, crown_h * 2), pygame.SRCALPHA)
-        pygame.draw.ellipse(crown_surf, HAT_STRAW, (0, 0, crown_w * 2, crown_h * 2))
-        # hat band
-        band_rect = (0, int(crown_h * 0.8), crown_w * 2, int(crown_h * 0.4))
-        pygame.draw.ellipse(crown_surf, HAT_BAND, band_rect)
-        crown_surf = pygame.transform.rotate(crown_surf, -math.degrees(angle) + 90)
-        crown_rect = crown_surf.get_rect(center=(int(hat_x), int(hat_y)))
-        surface.blit(crown_surf, crown_rect)
+        brim_surf = pygame.transform.rotate(brim_surf, deg)
+        surface.blit(brim_surf, brim_surf.get_rect(center=(int(hat_x), int(hat_y))))
+
+        # --- hat crown (dome on top) ---
+        crown_w = int(head_r * 1.3)
+        crown_h = int(head_r * 1.1)
+        csz = (crown_w * 2 + ol * 2, crown_h * 2 + ol * 2)
+        crown_surf = pygame.Surface(csz, pygame.SRCALPHA)
+        pygame.draw.ellipse(crown_surf, outline_col, (0, 0, csz[0], csz[1]))
+        pygame.draw.ellipse(crown_surf, HAT_STRAW, (ol, ol, crown_w * 2, crown_h * 2))
+        # subtle highlight on crown
+        pygame.draw.ellipse(crown_surf, straw_light,
+                            (ol + crown_w // 3, ol + crown_h // 3,
+                             crown_w, crown_h), 0)
+        # hat band (thick ribbon stripe)
+        band_h = max(4, int(crown_h * 0.4))
+        band_y = crown_h + ol - band_h // 2
+        pygame.draw.rect(crown_surf, HAT_BAND, (ol, band_y, crown_w * 2, band_h))
+        # ribbon bow knot on the side
+        bow_x = ol + crown_w * 2 - int(crown_w * 0.15)
+        bow_y = band_y + band_h // 2
+        for dy in (-4, 4):
+            pygame.draw.ellipse(crown_surf, HAT_BAND,
+                                (bow_x - 4, bow_y + dy - 3, 8, 6))
+        pygame.draw.circle(crown_surf, (140, 65, 40), (bow_x, bow_y), 2)
+
+        crown_surf = pygame.transform.rotate(crown_surf, deg)
+        surface.blit(crown_surf, crown_surf.get_rect(center=(int(hat_x), int(hat_y))))

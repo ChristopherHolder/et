@@ -27,4 +27,4 @@ SHOE_COLOR = (100, 60, 30)       # brown boots
 CHEEK_COLOR = (240, 150, 140)    # rosy cheeks
 
 # Walk animation
-WALK_CYCLE_SPEED = 10.0          # cycles per second
+WALK_CYCLE_SPEED = 5.0           # cycles per second
