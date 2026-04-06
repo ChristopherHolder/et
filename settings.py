@@ -12,6 +12,10 @@ GRID_COLOR = (30, 125, 30)       # slightly darker green grid
 GRID_SIZE = 64
 
 # Player
-PLAYER_SIZE = 32
-PLAYER_COLOR = (220, 220, 40)    # yellow
+PLAYER_SIZE = 36
 PLAYER_SPEED = 300               # pixels per second
+SKIN_COLOR = (230, 185, 140)
+SHIRT_COLOR = (50, 100, 200)
+PANTS_COLOR = (40, 40, 80)
+HAIR_COLOR = (60, 40, 20)
+SHOE_COLOR = (30, 30, 30)
