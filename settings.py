@@ -12,10 +12,19 @@ GRID_COLOR = (30, 125, 30)       # slightly darker green grid
 GRID_SIZE = 64
 
 # Player
-PLAYER_SIZE = 36
-PLAYER_SPEED = 300               # pixels per second
-SKIN_COLOR = (230, 185, 140)
-SHIRT_COLOR = (50, 100, 200)
-PANTS_COLOR = (40, 40, 80)
-HAIR_COLOR = (60, 40, 20)
-SHOE_COLOR = (30, 30, 30)
+PLAYER_SIZE = 40
+PLAYER_SPEED = 200               # pixels per second
+
+# Farmer palette
+SKIN_COLOR = (240, 200, 160)
+HAIR_COLOR = (80, 50, 20)
+OVERALL_COLOR = (80, 130, 200)
+OVERALL_BUCKLE = (220, 190, 60)
+SHIRT_COLOR = (230, 80, 80)      # red flannel
+HAT_STRAW = (235, 210, 140)
+HAT_BAND = (160, 80, 50)
+SHOE_COLOR = (100, 60, 30)       # brown boots
+CHEEK_COLOR = (240, 150, 140)    # rosy cheeks
+
+# Walk animation
+WALK_CYCLE_SPEED = 10.0          # cycles per second
