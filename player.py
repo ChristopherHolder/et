@@ -70,16 +70,29 @@ class Player:
 
         # --- legs (animated) ---
         for side, leg_swing in ((-1, swing), (1, -swing)):
-            # leg extends behind body, swings forward/back
             leg_fwd = leg_swing * r * 0.4
             lx = cx + perp_x * side * r * 0.25 - fwd_x * r * 0.2 + fwd_x * leg_fwd
             ly = cy + perp_y * side * r * 0.25 - fwd_y * r * 0.2 + fwd_y * leg_fwd - bob
             # overall leg
             pygame.draw.circle(surface, OVERALL_COLOR, (int(lx), int(ly)), int(r * 0.22))
-            # boot at end
-            bx = lx - fwd_x * r * 0.3
-            by = ly - fwd_y * r * 0.3
-            pygame.draw.circle(surface, SHOE_COLOR, (int(bx), int(by)), int(r * 0.2))
+            # chunky round boot
+            boot_x = lx - fwd_x * r * 0.32
+            boot_y = ly - fwd_y * r * 0.32
+            boot_r = int(r * 0.32)
+            # boot body (big round)
+            pygame.draw.circle(surface, SHOE_COLOR, (int(boot_x), int(boot_y)), boot_r)
+            # boot toe (bumps out forward a little for a rounded cute look)
+            toe_x = boot_x - fwd_x * boot_r * 0.45
+            toe_y = boot_y - fwd_y * boot_r * 0.45
+            pygame.draw.circle(surface, SHOE_COLOR, (int(toe_x), int(toe_y)), int(boot_r * 0.75))
+            # sole line (darker stripe at bottom edge)
+            sole_x = boot_x - fwd_x * boot_r * 0.15
+            sole_y = boot_y - fwd_y * boot_r * 0.15
+            pygame.draw.circle(surface, (70, 40, 20), (int(sole_x), int(sole_y)), int(boot_r * 0.85), 2)
+            # little shine highlight
+            shine_x = boot_x + fwd_x * boot_r * 0.2 + perp_x * side * boot_r * 0.15
+            shine_y = boot_y + fwd_y * boot_r * 0.2 + perp_y * side * boot_r * 0.15
+            pygame.draw.circle(surface, (150, 100, 60), (int(shine_x), int(shine_y)), int(boot_r * 0.2))
 
         # --- body (torso) ---
         body_y_offset = -bob
